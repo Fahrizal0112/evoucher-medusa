@@ -1,0 +1,11 @@
+{
+  "name": "e-voucher-medusa",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix evoucher\" \"npm run dev --prefix evoucher-storefront\"",
+    "install:all": "npm install && npm install --prefix evoucher && npm install --prefix evoucher-storefront"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
