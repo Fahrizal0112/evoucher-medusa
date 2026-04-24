@@ -6,6 +6,18 @@
   body {
     @apply bg-dark-bg text-white font-sans antialiased;
   }
+
+  .text-ui-fg-subtle {
+    color: rgb(226 232 240 / var(--tw-text-opacity, 1));
+  }
+
+  .text-ui-fg-muted {
+    color: rgb(148 163 184 / var(--tw-text-opacity, 1));
+  }
+
+  .text-ui-fg-disabled {
+    color: rgb(100 116 139 / var(--tw-text-opacity, 1));
+  }
 }
 
 @layer utilities {
