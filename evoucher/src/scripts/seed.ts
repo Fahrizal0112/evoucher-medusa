@@ -22,6 +22,7 @@ import {
   createTaxRegionsWorkflow,
   linkSalesChannelsToApiKeyWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
+  updateProductCategoriesWorkflow,
   updateStoresStep,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows";
@@ -372,30 +373,110 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   logger.info("Seeding product data...");
 
-  const { result: categoryResult } = await createProductCategoriesWorkflow(
-    container
-  ).run({
-    input: {
-      product_categories: [
-        {
-          name: "Shirts",
-          is_active: true,
-        },
-        {
-          name: "Sweatshirts",
-          is_active: true,
-        },
-        {
-          name: "Pants",
-          is_active: true,
-        },
-        {
-          name: "Merch",
-          is_active: true,
-        },
-      ],
+  const categorySeeds = [
+    {
+      legacyHandles: ["shirts"],
+      legacyNames: ["Shirts"],
+      name: "Mobile Legends",
+      handle: "mobile-legends",
     },
-  });
+    {
+      legacyHandles: ["sweatshirts"],
+      legacyNames: ["Sweatshirts"],
+      name: "Free Fire",
+      handle: "free-fire",
+    },
+    {
+      legacyHandles: ["pants"],
+      legacyNames: ["Pants"],
+      name: "PUBG Mobile",
+      handle: "pubg-mobile",
+    },
+    {
+      legacyHandles: ["merch"],
+      legacyNames: ["Merch"],
+      name: "Valorant",
+      handle: "valorant",
+    },
+  ];
+
+  const upsertedCategories = [] as any[];
+
+  for (const categorySeed of categorySeeds) {
+    let existingCategory = null as any;
+
+    for (const handleOrName of [
+      ...categorySeed.legacyHandles,
+      ...categorySeed.legacyNames,
+      categorySeed.handle,
+      categorySeed.name,
+    ]) {
+      const { data } = await query.graph({
+        entity: "product_category",
+        fields: ["id", "name", "handle"],
+        filters: {
+          handle: handleOrName,
+        },
+      });
+
+      if (data?.[0]) {
+        existingCategory = data[0];
+        break;
+      }
+
+      const { data: categoryByName } = await query.graph({
+        entity: "product_category",
+        fields: ["id", "name", "handle"],
+        filters: {
+          name: handleOrName,
+        },
+      });
+
+      if (categoryByName?.[0]) {
+        existingCategory = categoryByName[0];
+        break;
+      }
+    }
+
+    if (existingCategory) {
+      const { result: [updatedCategory] } = await updateProductCategoriesWorkflow(
+        container
+      ).run({
+        input: {
+          selector: {
+            id: existingCategory.id,
+          },
+          update: {
+            name: categorySeed.name,
+            handle: categorySeed.handle,
+            is_active: true,
+          },
+        },
+      });
+
+      upsertedCategories.push(updatedCategory);
+      continue;
+    }
+
+    const { result: [createdCategory] } = await createProductCategoriesWorkflow(
+      container
+    ).run({
+      input: {
+        product_categories: [
+          {
+            name: categorySeed.name,
+            handle: categorySeed.handle,
+            is_active: true,
+          },
+        ],
+      },
+    });
+
+    upsertedCategories.push(createdCategory);
+  }
+
+  const [mobileLegendsCategory, freeFireCategory, pubgMobileCategory, valorantCategory] =
+    upsertedCategories;
 
   await createProductsWorkflow(container).run({
     input: {
@@ -403,7 +484,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa T-Shirt",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Shirts")!.id,
+            mobileLegendsCategory.id,
           ],
           description:
             "Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.",
@@ -590,7 +671,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa Sweatshirt",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Sweatshirts")!.id,
+            freeFireCategory.id,
           ],
           description:
             "Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.",
@@ -691,7 +772,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa Sweatpants",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Pants")!.id,
+            pubgMobileCategory.id,
           ],
           description:
             "Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.",
@@ -792,7 +873,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           title: "Medusa Shorts",
           category_ids: [
-            categoryResult.find((cat) => cat.name === "Merch")!.id,
+            valorantCategory.id,
           ],
           description:
             "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",

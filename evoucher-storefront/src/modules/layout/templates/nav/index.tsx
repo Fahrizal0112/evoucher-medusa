@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Image from "next/image"
 
 import { listRegions } from "@lib/data/regions"
 import { listLocales } from "@lib/data/locales"
@@ -18,7 +17,7 @@ export default async function Nav() {
 
   return (
     <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-16 mx-auto border-b border-white/5 duration-200 bg-[#0A0F1C]/80 backdrop-blur-md">
+      <header className="relative h-16 mx-auto border-b duration-200 bg-dark-bg/80 backdrop-blur-md border-gray-800">
         <nav className="content-container txt-xsmall-plus text-gray-300 flex items-center justify-between w-full h-full text-small-regular">
           <div className="flex-1 basis-0 h-full flex items-center">
             <div className="h-full">
@@ -26,27 +25,20 @@ export default async function Nav() {
             </div>
           </div>
 
-          <div className="flex items-center h-full gap-2">
+          <div className="flex items-center h-full">
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus hover:text-white uppercase flex items-center gap-3"
+              className="txt-compact-xlarge-plus hover:text-neon-blue uppercase text-white font-bold tracking-widest transition-colors drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]"
               data-testid="nav-store-link"
             >
-              <Image 
-                src="/image/logo.webp" 
-                alt="UPOINT.ID Logo" 
-                width={40} 
-                height={40} 
-                className="object-contain"
-              />
-              <span className="font-bold tracking-wider text-white">UPOINT VOUCHER</span>
+              UPOINT ESPORTS
             </LocalizedClientLink>
           </div>
 
           <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
             <div className="hidden small:flex items-center gap-x-6 h-full">
               <LocalizedClientLink
-                className="hover:text-white"
+                className="hover:text-neon-blue transition-colors text-white"
                 href="/account"
                 data-testid="nav-account-link"
               >
@@ -56,7 +48,7 @@ export default async function Nav() {
             <Suspense
               fallback={
                 <LocalizedClientLink
-                  className="hover:text-white flex gap-2"
+                  className="hover:text-neon-blue flex gap-2 transition-colors text-white"
                   href="/cart"
                   data-testid="nav-cart-link"
                 >

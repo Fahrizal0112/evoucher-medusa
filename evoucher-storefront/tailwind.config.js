@@ -21,6 +21,17 @@ module.exports = {
         padding: "padding-top padding-right padding-bottom padding-left",
       },
       colors: {
+        neon: {
+          blue: "#00f3ff",
+          purple: "#bc13fe",
+          pink: "#ff007f",
+          green: "#00ff66",
+        },
+        dark: {
+          bg: "#0B0C10",
+          surface: "#1F2833",
+          card: "rgba(31, 40, 51, 0.6)",
+        },
         grey: {
           0: "#FFFFFF",
           5: "#F9FAFB",
@@ -34,6 +45,10 @@ module.exports = {
           80: "#1F2937",
           90: "#111827",
         },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
       },
       borderRadius: {
         none: "0px",

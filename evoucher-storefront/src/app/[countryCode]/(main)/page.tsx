@@ -6,9 +6,9 @@ import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
+  title: "Voucher Gaming Store | Top Up Murah & Cepat",
   description:
-    "A performant frontend ecommerce starter template with Next.js 15 and Medusa.",
+    "Beli voucher game, top up diamond, UC, dan saldo game favoritmu dengan harga termurah dan pengiriman instan.",
 }
 
 export default async function Home(props: {
@@ -31,7 +31,7 @@ export default async function Home(props: {
   return (
     <>
       <Hero />
-      <div className="py-12">
+      <div className="py-12 bg-dark-bg">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />
         </ul>
