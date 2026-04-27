@@ -13,12 +13,12 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
   const items = cart?.items
   return (
     <div>
-      <div className="pb-3 flex items-center">
-        <Heading className="text-[2rem] leading-[2.75rem]">Cart</Heading>
+      <div className="flex items-center border-b border-white/10 pb-4">
+        <Heading className="text-2xl-semi text-white">Cart</Heading>
       </div>
-      <Table>
-        <Table.Header className="border-t-0">
-          <Table.Row className="text-ui-fg-subtle txt-medium-plus">
+      <Table className="!bg-transparent w-full text-white [&_td]:!bg-transparent [&_th]:!bg-transparent [&_tr]:!bg-transparent [&_table]:!bg-transparent">
+        <Table.Header className="border-y-0 !bg-transparent">
+          <Table.Row className="txt-medium-plus border-b border-white/10 text-slate-400 !bg-transparent hover:!bg-transparent">
             <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
             <Table.HeaderCell></Table.HeaderCell>
             <Table.HeaderCell>Quantity</Table.HeaderCell>
@@ -30,7 +30,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-        <Table.Body>
+        <Table.Body className="!bg-transparent">
           {items
             ? items
                 .sort((a, b) => {

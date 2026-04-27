@@ -30,42 +30,52 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   }
 
   return (
-    <>
-      <div
-        className="content-container  flex flex-col small:flex-row small:items-start py-6 relative"
-        data-testid="product-container"
-      >
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
-          <ProductInfo product={product} />
-          <ProductTabs product={product} />
-        </div>
-        <div className="block w-full relative">
-          <ImageGallery images={images} />
-        </div>
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
-          <ProductOnboardingCta />
-          <Suspense
-            fallback={
-              <ProductActions
-                disabled={true}
-                product={product}
-                region={region}
-              />
-            }
-          >
-            <ProductActionsWrapper id={product.id} region={region} />
-          </Suspense>
-        </div>
+    <div className="relative w-full">
+      {/* Background Image Effect */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
+        <div
+          className="absolute inset-0 bg-no-repeat bg-cover bg-center blur-[100px] scale-110"
+          style={{
+            backgroundImage: images?.[0]?.url
+              ? `url(${images[0].url})`
+              : "none",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-ui-bg-base" />
       </div>
-      <div
-        className="content-container my-16 small:my-32"
-        data-testid="related-products-container"
-      >
+
+      <div className="relative z-10">
+        <div
+          className="content-container flex flex-col small:flex-row small:items-start py-6 relative"
+          data-testid="product-container"
+        >
+          <div className="block w-full small:w-1/2 relative">
+            <ImageGallery images={images} />
+          </div>
+          <div className="flex flex-col small:w-1/2 w-full py-8 gap-y-8 small:pl-8">
+            <div className="flex flex-col gap-y-4">
+              <ProductInfo product={product} />
+              <ProductOnboardingCta />
+              <Suspense
+                fallback={
+                  <ProductActions
+                    disabled={true}
+                    product={product}
+                    region={region}
+                  />
+                }
+              >
+                <ProductActionsWrapper id={product.id} region={region} />
+              </Suspense>
+            </div>
+            <ProductTabs product={product} />
+          </div>
+        </div>
         <Suspense fallback={<SkeletonRelatedProducts />}>
           <RelatedProducts product={product} countryCode={countryCode} />
         </Suspense>
       </div>
-    </>
+    </div>
   )
 }
 

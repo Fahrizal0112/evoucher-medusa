@@ -45,8 +45,11 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const maxQuantity = item.variant?.manage_inventory ? 10 : maxQtyFromInventory
 
   return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">
+    <Table.Row
+      className="w-full border-b border-white/10 hover:!bg-transparent !bg-transparent"
+      data-testid="product-row"
+    >
+      <Table.Cell className="w-24 !pl-0 p-4">
         <LocalizedClientLink
           href={`/products/${item.product_handle}`}
           className={clx("flex", {
@@ -56,15 +59,16 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
         >
           <Thumbnail
             thumbnail={item.thumbnail}
-            images={item.variant?.product?.images}
+            images={item.product?.images || item.variant?.product?.images}
             size="square"
+            className="rounded-md border border-cyan-100/10 bg-black/25 p-0 shadow-none"
           />
         </LocalizedClientLink>
       </Table.Cell>
 
       <Table.Cell className="text-left">
         <Text
-          className="txt-medium-plus text-ui-fg-base"
+          className="txt-medium-plus text-white"
           data-testid="product-title"
         >
           {item.product_title}
@@ -74,30 +78,26 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
 
       {type === "full" && (
         <Table.Cell>
-          <div className="flex gap-2 items-center w-28">
-            <DeleteButton id={item.id} data-testid="product-delete-button" />
-            <CartItemSelect
+          <div className="flex w-28 items-center gap-2 text-slate-400">
+            <DeleteButton
+              id={item.id}
+              className="[&_button]:text-slate-400 [&_button:hover]:text-cyan-100"
+              data-testid="product-delete-button"
+            />
+            <input
+              type="number"
+              min={1}
+              max={Math.max(maxQuantity, 100)}
               value={item.quantity}
-              onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="w-14 h-10 p-4"
+              onChange={(e) => {
+                const val = parseInt(e.target.value)
+                if (!isNaN(val) && val > 0) {
+                  changeQuantity(val)
+                }
+              }}
+              className="h-10 w-16 rounded border border-cyan-100/15 bg-white/[0.06] p-2 text-center text-white hover:bg-white/[0.1] focus:border-cyan-200 focus:outline-none focus:ring-0"
               data-testid="product-select-button"
-            >
-              {/* TODO: Update this with the v2 way of managing inventory */}
-              {Array.from(
-                {
-                  length: Math.min(maxQuantity, 10),
-                },
-                (_, i) => (
-                  <option value={i + 1} key={i}>
-                    {i + 1}
-                  </option>
-                )
-              )}
-
-              <option value={1} key={1}>
-                1
-              </option>
-            </CartItemSelect>
+            />
             {updating && <Spinner />}
           </div>
           <ErrorMessage error={error} data-testid="product-error-message" />
@@ -117,12 +117,12 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
       <Table.Cell className="!pr-0">
         <span
           className={clx("!pr-0", {
-            "flex flex-col items-end h-full justify-center": type === "preview",
+            "flex h-full flex-col items-end justify-center": type === "preview",
           })}
         >
           {type === "preview" && (
             <span className="flex gap-x-1 ">
-              <Text className="text-ui-fg-muted">{item.quantity}x </Text>
+              <Text className="text-slate-400">{item.quantity}x </Text>
               <LineItemUnitPrice
                 item={item}
                 style="tight"

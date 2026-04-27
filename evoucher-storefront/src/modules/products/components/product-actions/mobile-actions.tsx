@@ -89,7 +89,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   )}
                   <span
                     className={clx({
-                      "text-ui-fg-interactive":
+                      "text-ui-fg-interactive text-white":
                         selectedPrice.price_type === "sale",
                     })}
                   >
@@ -106,7 +106,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               {!isSimple && <Button
                 onClick={open}
                 variant="secondary"
-                className="w-full"
+                className="w-full text-white"
                 data-testid="mobile-actions-button"
               >
                 <div className="flex items-center justify-between w-full">

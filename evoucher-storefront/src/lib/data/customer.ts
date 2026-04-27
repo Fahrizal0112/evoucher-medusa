@@ -15,6 +15,30 @@ import {
   setAuthToken,
 } from "./cookies"
 
+const getCustomerAuthErrorMessage = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error)
+
+  if (message.toLowerCase().includes("unauthorized")) {
+    return "Email atau password salah, atau akun ini belum terdaftar sebagai customer."
+  }
+
+  return message
+}
+
+const getErrorMessage = (error: unknown) => {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return String(error)
+}
+
+const isInvalidCartVariantError = (error: unknown) => {
+  return getErrorMessage(error).includes(
+    "do not exist or belong to a product that is not published"
+  )
+}
+
 export const retrieveCustomer =
   async (): Promise<HttpTypes.StoreCustomer | null> => {
     const authHeaders = await getAuthHeaders()
@@ -80,11 +104,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
       ...(await getAuthHeaders()),
     }
 
-    const { customer: createdCustomer } = await sdk.store.customer.create(
-      customerForm,
-      {},
-      headers
-    )
+    await sdk.store.customer.create(customerForm, {}, headers)
 
     const loginToken = await sdk.auth.login("customer", "emailpass", {
       email: customerForm.email,
@@ -98,9 +118,9 @@ export async function signup(_currentState: unknown, formData: FormData) {
 
     await transferCart()
 
-    return createdCustomer
+    return null
   } catch (error: any) {
-    return error.toString()
+    return getCustomerAuthErrorMessage(error)
   }
 }
 
@@ -117,13 +137,13 @@ export async function login(_currentState: unknown, formData: FormData) {
         revalidateTag(customerCacheTag)
       })
   } catch (error: any) {
-    return error.toString()
+    return getCustomerAuthErrorMessage(error)
   }
 
   try {
     await transferCart()
   } catch (error: any) {
-    return error.toString()
+    return getCustomerAuthErrorMessage(error)
   }
 }
 
@@ -147,15 +167,34 @@ export async function transferCart() {
   const cartId = await getCartId()
 
   if (!cartId) {
-    return
+    return { success: true }
   }
 
   const headers = await getAuthHeaders()
 
-  await sdk.store.cart.transferCart(cartId, {}, headers)
+  try {
+    await sdk.store.cart.transferCart(cartId, {}, headers)
 
-  const cartCacheTag = await getCacheTag("carts")
-  revalidateTag(cartCacheTag)
+    const cartCacheTag = await getCacheTag("carts")
+    revalidateTag(cartCacheTag)
+
+    return { success: true }
+  } catch (error) {
+    if (isInvalidCartVariantError(error)) {
+      await removeCartId()
+
+      const cartCacheTag = await getCacheTag("carts")
+      revalidateTag(cartCacheTag)
+
+      return {
+        success: false,
+        message:
+          "Cart lama berisi produk yang sudah tidak tersedia. Cart sudah dibersihkan.",
+      }
+    }
+
+    throw error
+  }
 }
 
 export const addCustomerAddress = async (

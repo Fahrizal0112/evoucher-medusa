@@ -22,8 +22,8 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
           hasOverflow,
       })}
     >
-      <Table>
-        <Table.Body data-testid="items-table">
+      <Table className="!bg-transparent w-full text-white [&_td]:!bg-transparent [&_th]:!bg-transparent [&_tr]:!bg-transparent [&_table]:!bg-transparent">
+        <Table.Body data-testid="items-table" className="!bg-transparent">
           {items
             ? items
                 .sort((a, b) => {

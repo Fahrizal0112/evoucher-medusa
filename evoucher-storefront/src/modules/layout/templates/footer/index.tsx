@@ -12,21 +12,35 @@ export default async function Footer() {
   const productCategories = await listCategories()
 
   return (
-    <footer className="border-t border-ui-border-base w-full">
-      <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-          <div>
+    <footer className="relative w-full overflow-hidden border-t border-cyan-200/15 bg-[linear-gradient(135deg,#071316_0%,#111820_48%,#1b1420_100%)] text-slate-100">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon-blue/70 to-transparent" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.14]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+      <div className="content-container relative flex w-full flex-col">
+        <div className="flex flex-col gap-y-10 py-16 small:py-24 xsmall:flex-row xsmall:items-start xsmall:justify-between">
+          <div className="max-w-sm">
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
+              className="txt-compact-xlarge-plus inline-flex rounded-full border border-cyan-200/20 bg-white/5 px-4 py-2 text-white shadow-[0_0_28px_rgba(0,243,255,0.12)] transition-colors hover:border-cyan-200/40 hover:bg-white/10"
             >
               UPOINT
             </LocalizedClientLink>
+            <p className="mt-5 text-small-regular leading-6 text-slate-300">
+              Voucher digital, top up game, dan kebutuhan entertainment dalam
+              satu tempat.
+            </p>
           </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
+
+          <div className="grid w-full grid-cols-2 gap-8 text-small-regular sm:grid-cols-3 md:gap-x-14 xsmall:w-auto">
             {productCategories && productCategories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
+              <div className="flex flex-col gap-y-3 border-l border-white/10 pl-4">
+                <span className="txt-small-plus text-cyan-100">
                   Categories
                 </span>
                 <ul
@@ -47,12 +61,12 @@ export default async function Footer() {
 
                     return (
                       <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
+                        className="txt-small flex flex-col gap-2 text-slate-300"
                         key={c.id}
                       >
                         <LocalizedClientLink
                           className={clx(
-                            "hover:text-ui-fg-base",
+                            "transition-colors hover:text-white",
                             children && "txt-small-plus"
                           )}
                           href={`/categories/${c.handle}`}
@@ -61,12 +75,12 @@ export default async function Footer() {
                           {c.name}
                         </LocalizedClientLink>
                         {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
+                          <ul className="ml-3 grid grid-cols-1 gap-2 border-l border-white/10 pl-3">
                             {children &&
                               children.map((child) => (
                                 <li key={child.id}>
                                   <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
+                                    className="transition-colors hover:text-white"
                                     href={`/categories/${child.handle}`}
                                     data-testid="category-link"
                                   >
@@ -82,14 +96,15 @@ export default async function Footer() {
                 </ul>
               </div>
             )}
+
             {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
+              <div className="flex flex-col gap-y-3 border-l border-white/10 pl-4">
+                <span className="txt-small-plus text-cyan-100">
                   Collections
                 </span>
                 <ul
                   className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
+                    "txt-small grid grid-cols-1 gap-2 text-slate-300",
                     {
                       "grid-cols-2": (collections?.length || 0) > 3,
                     }
@@ -98,7 +113,7 @@ export default async function Footer() {
                   {collections?.slice(0, 6).map((c) => (
                     <li key={c.id}>
                       <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
+                        className="transition-colors hover:text-white"
                         href={`/collections/${c.handle}`}
                       >
                         {c.title}
@@ -108,15 +123,16 @@ export default async function Footer() {
                 </ul>
               </div>
             )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">UPOINT</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
+
+            <div className="flex flex-col gap-y-3 border-l border-white/10 pl-4">
+              <span className="txt-small-plus text-cyan-100">UPOINT</span>
+              <ul className="txt-small grid grid-cols-1 gap-y-2 text-slate-300">
                 <li>
                   <a
                     href="https://github.com/medusajs"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-ui-fg-base"
+                    className="transition-colors hover:text-white"
                   >
                     GitHub
                   </a>
@@ -126,7 +142,7 @@ export default async function Footer() {
                     href="https://docs.medusajs.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-ui-fg-base"
+                    className="transition-colors hover:text-white"
                   >
                     Documentation
                   </a>
@@ -136,7 +152,7 @@ export default async function Footer() {
                     href="https://github.com/medusajs/nextjs-starter-medusa"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-ui-fg-base"
+                    className="transition-colors hover:text-white"
                   >
                     Source code
                   </a>
@@ -145,9 +161,10 @@ export default async function Footer() {
             </div>
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-          <Text className="txt-compact-small">
-            © {new Date().getFullYear()} UPOINT. All rights reserved.
+
+        <div className="mb-8 flex w-full flex-col gap-4 border-t border-white/10 pt-6 text-slate-400 xsmall:flex-row xsmall:items-center xsmall:justify-between">
+          <Text className="txt-compact-small text-slate-400">
+            &copy; {new Date().getFullYear()} UPOINT. All rights reserved.
           </Text>
           <MedusaCTA />
         </div>

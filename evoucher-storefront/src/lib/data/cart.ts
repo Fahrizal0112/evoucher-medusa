@@ -24,7 +24,7 @@ import { getLocale } from "@lib/data/locale-actions"
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId())
   fields ??=
-    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
+    "*items, *region, *items.product, *items.product.images, *items.variant, *items.variant.product, *items.variant.product.images, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
 
   if (!id) {
     return null
@@ -137,8 +137,8 @@ export async function addToCart({
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
-    .createLineItem(
+  try {
+    await sdk.store.cart.createLineItem(
       cart.id,
       {
         variant_id: variantId,
@@ -147,14 +147,43 @@ export async function addToCart({
       {},
       headers
     )
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+  } catch (e: any) {
+    const errorText = JSON.stringify(
+      e.response?.data?.message || e.message || ""
+    )
+    if (
+      errorText.includes(
+        "do not exist or belong to a product that is not published"
+      )
+    ) {
+      await removeCartId()
+      const newCart = await getOrSetCart(countryCode)
+      if (!newCart) {
+        throw new Error("Error retrieving or creating cart")
+      }
+      try {
+        await sdk.store.cart.createLineItem(
+          newCart.id,
+          {
+            variant_id: variantId,
+            quantity,
+          },
+          {},
+          headers
+        )
+      } catch (innerError: any) {
+        return medusaError(innerError)
+      }
+    } else {
+      return medusaError(e)
+    }
+  }
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fulfillmentCacheTag)
-    })
-    .catch(medusaError)
+  const cartCacheTag = await getCacheTag("carts")
+  revalidateTag(cartCacheTag)
+
+  const fulfillmentCacheTag = await getCacheTag("fulfillment")
+  revalidateTag(fulfillmentCacheTag)
 }
 
 export async function updateLineItem({

@@ -14,24 +14,25 @@ type Props = {
 
 const Register = ({ setCurrentView }: Props) => {
   const [message, formAction] = useActionState(signup, null)
+  const inputClassName =
+    "pt-4 pb-1 block w-full h-12 px-4 mt-0 appearance-none rounded-md border border-cyan-100/15 bg-white/[0.06] text-white outline-none transition-colors placeholder:text-transparent hover:bg-white/[0.09] focus:border-cyan-200/60 focus:bg-white/[0.09] focus:ring-0"
 
   return (
     <div
-      className="max-w-sm flex flex-col items-center"
+      className="w-full max-w-md border border-cyan-100/15 bg-black/25 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.32)] small:p-8"
       data-testid="register-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">
-        Become a UPOINT Member
-      </h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Create your UPOINT Member profile, and get access to an enhanced
-        shopping experience.
+      <p className="txt-compact-small-plus text-cyan-100">NEW MEMBER</p>
+      <h1 className="mt-3 text-2xl-semi text-white">Become a UPOINT Member</h1>
+      <p className="mt-3 text-base-regular text-slate-300">
+        Buat akun untuk checkout lebih cepat dan kelola pesanan digital kamu.
       </p>
-      <form className="w-full flex flex-col" action={formAction}>
-        <div className="flex flex-col w-full gap-y-2">
+      <form className="mt-8 flex w-full flex-col" action={formAction}>
+        <div className="flex w-full flex-col gap-y-3">
           <Input
             label="First name"
             name="first_name"
+            className={inputClassName}
             required
             autoComplete="given-name"
             data-testid="first-name-input"
@@ -39,6 +40,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="Last name"
             name="last_name"
+            className={inputClassName}
             required
             autoComplete="family-name"
             data-testid="last-name-input"
@@ -46,6 +48,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="Email"
             name="email"
+            className={inputClassName}
             required
             type="email"
             autoComplete="email"
@@ -54,6 +57,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="Phone"
             name="phone"
+            className={inputClassName}
             type="tel"
             autoComplete="tel"
             data-testid="phone-input"
@@ -61,6 +65,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="Password"
             name="password"
+            className={inputClassName}
             required
             type="password"
             autoComplete="new-password"
@@ -68,32 +73,35 @@ const Register = ({ setCurrentView }: Props) => {
           />
         </div>
         <ErrorMessage error={message} data-testid="register-error" />
-        <span className="text-center text-ui-fg-base text-small-regular mt-6">
+        <span className="mt-6 text-center text-small-regular text-slate-400">
           By creating an account, you agree to UPOINT&apos;s{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
-            className="underline"
+            className="text-cyan-100 underline underline-offset-4 transition-colors hover:text-white"
           >
             Privacy Policy
           </LocalizedClientLink>{" "}
           and{" "}
           <LocalizedClientLink
             href="/content/terms-of-use"
-            className="underline"
+            className="text-cyan-100 underline underline-offset-4 transition-colors hover:text-white"
           >
             Terms of Use
           </LocalizedClientLink>
           .
         </span>
-        <SubmitButton className="w-full mt-6" data-testid="register-button">
+        <SubmitButton
+          className="mt-6 h-12 w-full border-0 bg-cyan-300 text-slate-950 shadow-[0_0_28px_rgba(0,243,255,0.22)] transition-colors hover:bg-white"
+          data-testid="register-button"
+        >
           Join
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
+      <span className="mt-6 text-center text-small-regular text-slate-300">
         Already a member?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
-          className="underline"
+          className="text-cyan-100 underline underline-offset-4 transition-colors hover:text-white"
         >
           Sign in
         </button>
